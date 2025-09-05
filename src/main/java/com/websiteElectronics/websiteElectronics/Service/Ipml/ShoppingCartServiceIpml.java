@@ -29,6 +29,15 @@ public class ShoppingCartServiceIpml implements ShoppingCartService {
     @Override
     public ShoppingCartDto createShoppingCart(ShoppingCartDto shoppingCartDto) {
         ShoppingCart shoppingCart = ShoppingCartMapper.mapToEntity(shoppingCartDto);
+
+        Customers customer = customersRepository.findById(shoppingCartDto.getCustomer_id())
+            .orElseThrow(() -> new RuntimeException("Customer not found: " + shoppingCartDto.getCustomer_id()));
+        Electronics product = electronicsRepositorys.findById(shoppingCartDto.getProduct_id())
+            .orElseThrow(() -> new RuntimeException("Product not found: " + shoppingCartDto.getProduct_id()));
+
+        shoppingCart.setCustomer(customer);
+        shoppingCart.setProduct(product);
+
         ShoppingCart savedShoppingCart = shoppingCartRepository.save(shoppingCart);
         return ShoppingCartMapper.mapToDto(savedShoppingCart);
     }

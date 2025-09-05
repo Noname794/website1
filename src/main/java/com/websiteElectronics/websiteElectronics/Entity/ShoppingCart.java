@@ -20,15 +20,15 @@ public class ShoppingCart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cart_id")
-    private Integer id;   // cartId
+    private Integer id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id") // foreign key trong DB
-    private Customers customer;        // quan hệ tới Customers
+    @JoinColumn(name = "customer_id")
+    private Customers customer;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    private Electronics product;       // quan hệ tới Electronics
+    private Electronics product;
 
     private int quantity;
 

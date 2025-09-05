@@ -1,5 +1,6 @@
 package com.websiteElectronics.websiteElectronics.Controller;
 
+import com.websiteElectronics.websiteElectronics.Dto.OrderStatsDto;
 import com.websiteElectronics.websiteElectronics.Dto.OrdersDto;
 import com.websiteElectronics.websiteElectronics.Service.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/orders")
 public class OrdersController {
@@ -37,5 +39,10 @@ public class OrdersController {
     @GetMapping
     public ResponseEntity<List<OrdersDto>> getAllOrders() {
         return ResponseEntity.ok(ordersService.getAllOrders());
+    }
+
+    @GetMapping("/stats/{customerId}")
+    public ResponseEntity<OrderStatsDto> getOrderStats(@PathVariable int customerId) {
+        return ResponseEntity.ok(ordersService.getOrderStatsByCustomerId(customerId));
     }
 }

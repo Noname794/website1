@@ -1,5 +1,6 @@
 package com.websiteElectronics.websiteElectronics.Service.Ipml;
 
+import com.websiteElectronics.websiteElectronics.Dto.OrderStatsDto;
 import com.websiteElectronics.websiteElectronics.Dto.OrdersDto;
 import com.websiteElectronics.websiteElectronics.Entity.Orders;
 import com.websiteElectronics.websiteElectronics.Exception.OrdersException;
@@ -62,5 +63,20 @@ public class OrdersServiceIpml implements OrdersService {
         return ordersRepository.findAll().stream()
                 .map(OrdersMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public OrderStatsDto getOrderStatsByCustomerId(int customerId) {
+        List<Object[]> result = ordersRepository.findOderStatsByCustomerId(customerId);
+        System.out.println("customerId: " + customerId);
+        System.out.println("Query result: " + result);
+        Long totalOrders = 0L;
+        Double totalAmountSpent = 0.0;
+        if (result != null && !result.isEmpty()) {
+            Object[] arr = result.get(0);
+            if (arr[0] != null) totalOrders = ((Number) arr[0]).longValue();
+            if (arr[1] != null) totalAmountSpent = ((Number) arr[1]).doubleValue();
+        }
+        return new OrderStatsDto(totalOrders, totalAmountSpent);
     }
 }
