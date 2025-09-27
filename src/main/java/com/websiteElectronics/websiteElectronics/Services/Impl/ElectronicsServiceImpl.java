@@ -2,6 +2,7 @@ package com.websiteElectronics.websiteElectronics.Services.Impl;
 
 import com.websiteElectronics.websiteElectronics.Dtos.ProductsDto;
 import com.websiteElectronics.websiteElectronics.Entities.Products;
+import com.websiteElectronics.websiteElectronics.Exceptions.NotFoundId;
 import com.websiteElectronics.websiteElectronics.Mappers.ElectronicsMapper;
 import com.websiteElectronics.websiteElectronics.Repositories.ElectronicsRepositorys;
 import com.websiteElectronics.websiteElectronics.Services.ElectronicsService;
@@ -72,7 +73,9 @@ public class ElectronicsServiceImpl implements ElectronicsService {
 
     @Override
     public void deleteElectronics(int id) {
-        Products electronics = findId(id);
-        electronicsRepositorys.delete(electronics);
+        if (!electronicsRepositorys.existsById(id)) {
+            throw new NotFoundId("Product not found with id: " + id);
+        }
+        electronicsRepositorys.deleteById(id);
     }
 }

@@ -3,7 +3,7 @@ package com.websiteElectronics.websiteElectronics.Services.Impl;
 import com.websiteElectronics.websiteElectronics.Dtos.OrderStatsDto;
 import com.websiteElectronics.websiteElectronics.Dtos.OrdersDto;
 import com.websiteElectronics.websiteElectronics.Entities.Orders;
-import com.websiteElectronics.websiteElectronics.Exceptions.OrdersException;
+import com.websiteElectronics.websiteElectronics.Exceptions.NotFoundId;
 import com.websiteElectronics.websiteElectronics.Mappers.OrdersMapper;
 import com.websiteElectronics.websiteElectronics.Repositories.OrdersRepository;
 import com.websiteElectronics.websiteElectronics.Services.OrdersService;
@@ -62,7 +62,7 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public void deleteOrder(int id) {
         if (!ordersRepository.existsById(id)) {
-            throw new OrdersException("Order not found with id: " + id);
+            throw new NotFoundId("Order not found with id: " + id);
         }
         ordersRepository.deleteById(id);
     }

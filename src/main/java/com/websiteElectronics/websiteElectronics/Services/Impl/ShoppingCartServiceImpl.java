@@ -4,6 +4,7 @@ import com.websiteElectronics.websiteElectronics.Dtos.ShoppingCartDto;
 import com.websiteElectronics.websiteElectronics.Entities.Customers;
 import com.websiteElectronics.websiteElectronics.Entities.Products;
 import com.websiteElectronics.websiteElectronics.Entities.ShoppingCart;
+import com.websiteElectronics.websiteElectronics.Exceptions.NotFoundId;
 import com.websiteElectronics.websiteElectronics.Mappers.ShoppingCartMapper;
 import com.websiteElectronics.websiteElectronics.Repositories.CustomersRepository;
 import com.websiteElectronics.websiteElectronics.Repositories.ElectronicsRepositorys;
@@ -95,6 +96,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public void deleteShoppingCart(int id) {
+        if (!shoppingCartRepository.existsById(id)) {
+            throw new NotFoundId("Shopping cart not found with id: " + id);
+        }
         shoppingCartRepository.deleteById(id);
     }
 

@@ -20,7 +20,7 @@ import java.util.List;
 
 @AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(OrdersController.class)
-public class OrdersControllerTest {
+class OrdersControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

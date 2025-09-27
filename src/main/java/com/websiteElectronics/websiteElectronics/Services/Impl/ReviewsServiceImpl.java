@@ -4,6 +4,7 @@ import com.websiteElectronics.websiteElectronics.Dtos.ReviewsDto;
 import com.websiteElectronics.websiteElectronics.Entities.Customers;
 import com.websiteElectronics.websiteElectronics.Entities.Products;
 import com.websiteElectronics.websiteElectronics.Entities.Reviews;
+import com.websiteElectronics.websiteElectronics.Exceptions.NotFoundId;
 import com.websiteElectronics.websiteElectronics.Mappers.ReviewsMapper;
 import com.websiteElectronics.websiteElectronics.Repositories.CustomersRepository;
 import com.websiteElectronics.websiteElectronics.Repositories.ElectronicsRepositorys;
@@ -95,7 +96,7 @@ public class ReviewsServiceImpl implements ReviewsService {
     @Override
     public void deleteReview(int id) {
         if (!reviewsRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Review not found with id: " + id);
+            throw new NotFoundId("Review not found with id: " + id);
         }
         reviewsRepository.deleteById(id);
     }

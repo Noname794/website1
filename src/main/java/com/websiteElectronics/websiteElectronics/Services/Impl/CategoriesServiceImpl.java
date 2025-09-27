@@ -2,7 +2,8 @@ package com.websiteElectronics.websiteElectronics.Services.Impl;
 
 import com.websiteElectronics.websiteElectronics.Dtos.CategoriesDto;
 import com.websiteElectronics.websiteElectronics.Entities.Categories;
-import com.websiteElectronics.websiteElectronics.Exceptions.CategoriesException;
+
+import com.websiteElectronics.websiteElectronics.Exceptions.NotFoundId;
 import com.websiteElectronics.websiteElectronics.Mappers.CategoriesMapper;
 import com.websiteElectronics.websiteElectronics.Repositories.CategoriesRepository;
 import com.websiteElectronics.websiteElectronics.Services.CategoriesService;
@@ -58,10 +59,11 @@ public class CategoriesServiceImpl implements CategoriesService {
     @Override
     public void deleteCategory(int id) {
         if (!categoriesRepository.existsById(id)) {
-            throw new CategoriesException("Category not found with id: " + id);
+            throw new NotFoundId("Category not found with id: " + id);
         }
         categoriesRepository.deleteById(id);
     }
+
 
     @Override
     public CategoriesDto getCategoryById(int id) {

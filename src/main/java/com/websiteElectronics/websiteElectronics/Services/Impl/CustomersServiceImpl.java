@@ -2,6 +2,7 @@ package com.websiteElectronics.websiteElectronics.Services.Impl;
 
 import com.websiteElectronics.websiteElectronics.Dtos.CustomersDto;
 import com.websiteElectronics.websiteElectronics.Entities.Customers;
+import com.websiteElectronics.websiteElectronics.Exceptions.NotFoundId;
 import com.websiteElectronics.websiteElectronics.Mappers.CustomersMapper;
 import com.websiteElectronics.websiteElectronics.Repositories.CustomersRepository;
 import com.websiteElectronics.websiteElectronics.Services.CustomersService;
@@ -65,7 +66,7 @@ public class CustomersServiceImpl implements CustomersService {
     @Override
     public void deleteCustomer(int id) {
         if (!customersRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found with id: " + id);
+            throw new NotFoundId("Customer not found with id: " + id);
         }
         customersRepository.deleteById(id);
     }

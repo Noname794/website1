@@ -1,6 +1,5 @@
 package com.websiteElectronics.websiteElectronics.Controllers;
 
-import com.websiteElectronics.websiteElectronics.Controllers.AuthController;
 import com.websiteElectronics.websiteElectronics.Dtos.RegisterRequest;
 import com.websiteElectronics.websiteElectronics.Dtos.LoginRequest;
 import com.websiteElectronics.websiteElectronics.Dtos.AuthResponse;
