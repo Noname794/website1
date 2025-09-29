@@ -79,7 +79,7 @@ public class CustomersServiceImpl implements CustomersService {
 
     @Override
     public List<CustomersDto> getAllCustomers() {
-        return customersRepository.findAll().stream()
+        return customersRepository.findAll().parallelStream()
                 .map(CustomersMapper::toDto)
                 .toList();
     }

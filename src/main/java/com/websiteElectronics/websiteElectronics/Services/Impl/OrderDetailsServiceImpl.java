@@ -43,7 +43,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     @Override
     public List<OrderDetailsDto> lstOrderDetails() {
         List<OrderDetails> lst = orderDetailsRepository.findAll();
-        return lst.stream().map(OrderDetailsMapper::toDto).toList();
+        return lst.parallelStream().map(OrderDetailsMapper::toDto).toList();
     }
 
     @Override

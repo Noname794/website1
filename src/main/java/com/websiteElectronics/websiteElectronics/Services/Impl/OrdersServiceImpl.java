@@ -75,7 +75,7 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public List<OrdersDto> getAllOrders() {
-        return ordersRepository.findAll().stream()
+        return ordersRepository.findAll().parallelStream()
                 .map(OrdersMapper::toDto)
                 .toList();
     }

@@ -1,5 +1,6 @@
 package com.websiteElectronics.websiteElectronics.Controllers;
 
+import com.websiteElectronics.websiteElectronics.Controllers.ExportToExcel.OrdersExport;
 import com.websiteElectronics.websiteElectronics.Dtos.OrderStatsDto;
 import com.websiteElectronics.websiteElectronics.Dtos.OrdersDto;
 import com.websiteElectronics.websiteElectronics.Services.OrdersService;
@@ -56,30 +57,13 @@ public class OrdersController {
         return ResponseEntity.ok(ordersService.getOrderStatsByCustomerId(customerId));
     }
 
+
     @GetMapping("/export/excel")
-    public void exportToExcel(HttpServletResponse response) throws IOException {
+    public void exportOrders(HttpServletResponse response) throws IOException {
         response.setContentType("text/csv");
-        response.setHeader("Content-Disposition", "attachment; filename=orders.xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename=orders.csv");
 
         List<OrdersDto> orders = ordersService.getAllOrders();
-
-        PrintWriter writer = response.getWriter();
-        writer.println("Order ID, Customer ID, Payment Method ID, Shipping Method ID ,Order Date, Status, Total Amount");
-
-        for (OrdersDto order : orders) {
-            writer.println(
-                    order.getId() + "," +
-                            order.getCustomerId() + "," +
-                            order.getPaymentMethodId() + "," +
-                            order.getShippingMethodId() + "," +
-                            order.getOrderDate() + "," +
-                            order.getStatus() + "," +
-                            order.getTotalAmount()
-            );
-        }
-
-        writer.flush();
-        writer.close();
-
+        OrdersExport.exportToCsv(orders, response.getOutputStream());
     }
 }

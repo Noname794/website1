@@ -1,5 +1,6 @@
 package com.websiteElectronics.websiteElectronics.Controllers;
 
+import com.websiteElectronics.websiteElectronics.Controllers.ExportToExcel.OrdersDetailExport;
 import com.websiteElectronics.websiteElectronics.Dtos.OrderDetailsDto;
 import com.websiteElectronics.websiteElectronics.Entities.Products;
 import com.websiteElectronics.websiteElectronics.Services.OrderDetailsService;
@@ -55,26 +56,13 @@ public class OrderDetailsController {
         return ResponseEntity.ok(products);
     }
 
+
     @GetMapping("export/excel")
-    public void exportToExcel(HttpServletResponse response) throws IOException{
+    public void exportOrderDetails(HttpServletResponse response) throws IOException {
         response.setContentType("text/csv");
-        response.setHeader("Content-Disposition", "attachment; filename=orderDetails.xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename=orderDetails.csv");
 
         List<OrderDetailsDto> orderDetails = orderDetailsService.lstOrderDetails();
-
-        PrintWriter writer = response.getWriter();
-        writer.println("Order Detail Id, Order Id, Product Id, Quantity");
-
-        for(OrderDetailsDto orderDetail : orderDetails){
-            writer.println(
-                    orderDetail.getId() + "," +
-                            orderDetail.getOrderId() + "," +
-                            orderDetail.getProductId() + "," +
-                            orderDetail.getQuantity()
-            );
-        }
-
-        writer.flush();
-        writer.close();
+        OrdersDetailExport.exportToCsv(orderDetails, response.getOutputStream());
     }
 }

@@ -1,5 +1,6 @@
 package com.websiteElectronics.websiteElectronics.Controllers;
 
+import com.websiteElectronics.websiteElectronics.Controllers.ExportToExcel.ProductsExport;
 import com.websiteElectronics.websiteElectronics.Dtos.ProductsDto;
 import com.websiteElectronics.websiteElectronics.Services.ElectronicsService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -52,30 +53,13 @@ public class ElectronicsController {
         return ResponseEntity.ok().build();
     }
 
+
     @GetMapping("/export/excel")
-    public void exportToExcel(HttpServletResponse response) throws IOException {
+    public void exportProducts(HttpServletResponse response) throws IOException {
         response.setContentType("text/csv");
-        response.setHeader("Content-Disposition", "attachment; filename=electronics.xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename=electronics.csv");
 
         List<ProductsDto> electronics = electronicsService.getAllElectronics();
-
-        PrintWriter writer = response.getWriter();
-        writer.println("Product ID, Name, Description, Price, Quantity, Image URL, Category, Supplier");
-
-        for (ProductsDto electronicsDto : electronics) {
-            writer.println(
-                    electronicsDto.getId() + "," +
-                            electronicsDto.getName() + "," +
-                            electronicsDto.getDescription() + "," +
-                            electronicsDto.getPrice() + "," +
-                            electronicsDto.getQuantity() + "," +
-                            electronicsDto.getImageUrl() + "," +
-                            electronicsDto.getCategory() + "," +
-                            electronicsDto.getSupplier()
-            );
-        }
-
-        writer.flush();
-        writer.close();
+        ProductsExport.exportToCsv(electronics, response.getOutputStream());
     }
 }

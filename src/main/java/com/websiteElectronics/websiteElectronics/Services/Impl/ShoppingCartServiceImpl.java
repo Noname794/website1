@@ -91,7 +91,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public List<ShoppingCartDto> getAllShoppingCarts() {
         List<ShoppingCart> getAllShoppingCarts = shoppingCartRepository.findAll();
-        return getAllShoppingCarts.stream().map(ShoppingCartMapper::mapToDto).toList();
+        return getAllShoppingCarts.parallelStream().map(ShoppingCartMapper::mapToDto).toList();
     }
 
     @Override
@@ -105,18 +105,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public List<ShoppingCartDto> getShoppingCartByCustomerId(int customerId) {
         List<ShoppingCart> carts = shoppingCartRepository.findByCustomerId(customerId);
-        List<ShoppingCartDto> dos = new ArrayList<>();
-        if (carts != null) {
-            for (ShoppingCart cart : carts) {
-                ShoppingCartDto dto = new ShoppingCartDto();
-                dto.setId(cart.getId());
-                dto.setCustomerId(cart.getCustomer().getId());
-                dto.setProductId(cart.getProduct().getId());
-                dto.setQuantity(cart.getQuantity());
-                dto.setCreatedAt(cart.getCreatedAt());
-                dos.add(dto);
-            }
-        }
-        return dos;
+        if (carts == null) return List.of();
+
+        return carts.parallelStream().map(ShoppingCartMapper::mapToDto).toList();
+
     }
 }

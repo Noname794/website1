@@ -78,7 +78,7 @@ public class ReviewsServiceImpl implements ReviewsService {
 
     @Override
     public List<ReviewsDto> getAllReviews() {
-        return reviewsRepository.findAll().stream()
+        return reviewsRepository.findAll().parallelStream()
             .map(reviewsMapper::toDto)
             .toList();
     }

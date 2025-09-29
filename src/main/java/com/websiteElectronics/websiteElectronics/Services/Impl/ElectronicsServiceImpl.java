@@ -39,7 +39,7 @@ public class ElectronicsServiceImpl implements ElectronicsService {
     @Override
     public List<ProductsDto> getAllElectronics() {
         List<Products> lstElectronics = electronicsRepositorys.findAll();
-        return lstElectronics.stream().map(ElectronicsMapper::mapToDto).toList();
+        return lstElectronics.parallelStream().map(ElectronicsMapper::mapToDto).toList();
     }
 
     @Override

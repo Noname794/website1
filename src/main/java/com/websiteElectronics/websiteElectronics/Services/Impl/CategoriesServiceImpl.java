@@ -73,7 +73,7 @@ public class CategoriesServiceImpl implements CategoriesService {
 
     @Override
     public List<CategoriesDto> getAllCategories() {
-        return categoriesRepository.findAll().stream()
+        return categoriesRepository.findAll().parallelStream()
                 .map(CategoriesMapper::toDto)
                 .toList();
     }

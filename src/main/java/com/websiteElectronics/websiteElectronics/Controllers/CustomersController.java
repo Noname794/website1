@@ -1,6 +1,8 @@
 package com.websiteElectronics.websiteElectronics.Controllers;
 
+import com.websiteElectronics.websiteElectronics.Controllers.ExportToExcel.CustomersExport;
 import com.websiteElectronics.websiteElectronics.Dtos.CustomersDto;
+import com.websiteElectronics.websiteElectronics.Entities.Customers;
 import com.websiteElectronics.websiteElectronics.Services.CustomersService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,27 +51,14 @@ public class CustomersController {
         return ResponseEntity.ok(customersService.getAllCustomers());
     }
 
-    @GetMapping("export/excel")
-    public void exportToExcel(HttpServletResponse response) throws IOException {
+
+    //  API export CSV
+    @GetMapping("/export")
+    public void exportCustomers(HttpServletResponse response) throws IOException {
         response.setContentType("text/csv");
-        response.setHeader("Content-Disposition", "attachment; filename=customers.xlsx");
+        response.setHeader("Content-Disposition", "attachment; filename=customers.csv");
 
         List<CustomersDto> customers = customersService.getAllCustomers();
-
-        PrintWriter writer = response.getWriter();
-        writer.println("Customer ID, First Name, Last Name, Email, Phone Number");
-
-        for(CustomersDto customer : customers){
-            writer.println(
-                    customer.getId() + "," +
-                            customer.getFirstName() + "," +
-                            customer.getLastName() + "," +
-                            customer.getEmail() + "," +
-                            customer.getPhoneNumber()
-            );
-        }
-
-        writer.flush();
-        writer.close();
+        CustomersExport.exportToCsv(customers, response.getOutputStream());
     }
 }
