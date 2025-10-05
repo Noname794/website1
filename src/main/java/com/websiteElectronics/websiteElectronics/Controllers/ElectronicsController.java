@@ -55,7 +55,7 @@ public class ElectronicsController {
 
 
     @GetMapping("/export/excel")
-    public void exportProducts(HttpServletResponse response) throws IOException {
+    public void exportProducts(HttpServletResponse response) throws Exception {
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=electronics.csv");
 

@@ -15,4 +15,5 @@ public interface OrderDetailsRepository extends JpaRepository<OrderDetails, Inte
             "WHERE od.orderId.customer.id = :customerId")
     List<Integer> findProductIdsByCustomerId(@Param("customerId") Integer customerId);
 
+    List<OrderDetails> findByOrderId_Id(int orderId);
 }

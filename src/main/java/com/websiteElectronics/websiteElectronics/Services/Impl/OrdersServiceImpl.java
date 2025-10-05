@@ -5,7 +5,11 @@ import com.websiteElectronics.websiteElectronics.Dtos.OrdersDto;
 import com.websiteElectronics.websiteElectronics.Entities.Orders;
 import com.websiteElectronics.websiteElectronics.Exceptions.NotFoundId;
 import com.websiteElectronics.websiteElectronics.Mappers.OrdersMapper;
+import com.websiteElectronics.websiteElectronics.Repositories.CustomersRepository;
 import com.websiteElectronics.websiteElectronics.Repositories.OrdersRepository;
+import com.websiteElectronics.websiteElectronics.Repositories.PaymentMethodsRepository;
+import com.websiteElectronics.websiteElectronics.Repositories.ShippingMethodsRepository;
+import com.websiteElectronics.websiteElectronics.Services.InvoicesService;
 import com.websiteElectronics.websiteElectronics.Services.OrdersService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +27,22 @@ public class OrdersServiceImpl implements OrdersService {
     private static final Logger logger = LoggerFactory.getLogger(OrdersServiceImpl.class);
 
     private final OrdersRepository ordersRepository;
+    private final InvoicesService invoicesService;
+    private final CustomersRepository customersRepository;
+    private final PaymentMethodsRepository paymentMethodsRepository;
+    private final ShippingMethodsRepository shippingMethodsRepository;
 
     @Autowired
-    public OrdersServiceImpl(OrdersRepository ordersRepository) {
+    public OrdersServiceImpl(OrdersRepository ordersRepository, 
+                            InvoicesService invoicesService,
+                            CustomersRepository customersRepository,
+                            PaymentMethodsRepository paymentMethodsRepository,
+                            ShippingMethodsRepository shippingMethodsRepository) {
         this.ordersRepository = ordersRepository;
+        this.invoicesService = invoicesService;
+        this.customersRepository = customersRepository;
+        this.paymentMethodsRepository = paymentMethodsRepository;
+        this.shippingMethodsRepository = shippingMethodsRepository;
     }
 
     private Orders findId(int id){
@@ -42,6 +58,13 @@ public class OrdersServiceImpl implements OrdersService {
     public OrdersDto createOrder(OrdersDto orderDto) {
         Orders order = OrdersMapper.toEntity(orderDto);
         Orders saved = ordersRepository.save(order);
+        try {
+            invoicesService.generateAndSendInvoice(saved, 43200);
+            logger.info("Invoice created and sent for order ID: {}", saved.getId());
+        } catch (Exception e) {
+            logger.error("Failed to create/send invoice for order ID: {}", saved.getId(), e);
+        }
+        
         return OrdersMapper.toDto(saved);
     }
 
@@ -52,9 +75,17 @@ public class OrdersServiceImpl implements OrdersService {
         order.setOrderDate(orderDto.getOrderDate());
         order.setStatus(orderDto.getStatus());
         order.setTotalAmount(orderDto.getTotalAmount());
-        order.setCustomer(orderDto.getCustomerId());
-        order.setPaymentMethod(orderDto.getPaymentMethodId());
-        order.setShippingMethod(orderDto.getShippingMethodId());
+
+        if (orderDto.getCustomerId() > 0) {
+            order.setCustomer(customersRepository.findById(orderDto.getCustomerId()).orElse(null));
+        }
+        if (orderDto.getPaymentMethodId() > 0) {
+            order.setPaymentMethod(paymentMethodsRepository.findById(orderDto.getPaymentMethodId()).orElse(null));
+        }
+        if (orderDto.getShippingMethodId() > 0) {
+            order.setShippingMethod(shippingMethodsRepository.findById(orderDto.getShippingMethodId()).orElse(null));
+        }
+        
         Orders updated = ordersRepository.save(order);
         return OrdersMapper.toDto(updated);
     }

@@ -1,5 +1,7 @@
 package com.websiteElectronics.websiteElectronics.Dtos;
 
+import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvBindByPosition;
 import com.websiteElectronics.websiteElectronics.Entities.Customers;
 import com.websiteElectronics.websiteElectronics.Entities.PaymentMethods;
 import com.websiteElectronics.websiteElectronics.Entities.ShippingMethods;
@@ -13,12 +15,32 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrdersDto {
+    @CsvBindByPosition(position = 0)
+    @CsvBindByName(column = "Order Id")
     private int id;
+
+    @CsvBindByPosition(position = 1)
+    @CsvBindByName(column = "Order Date")
     private Date orderDate;
+
+    @CsvBindByPosition(position = 2)
+    @CsvBindByName(column = "Status")
     private String status;
+
+    @CsvBindByPosition(position = 3)
+    @CsvBindByName(column = "Total Amount")
     private int totalAmount;
-    private Customers customerId;
-    private PaymentMethods paymentMethodId;
-    private ShippingMethods shippingMethodId;
+
+    @CsvBindByPosition(position = 4)
+    @CsvBindByName(column = "Customer Id")
+    private int customerId;
+
+    @CsvBindByPosition(position = 5)
+    @CsvBindByName(column = "Payment Method Id")
+    private int paymentMethodId;
+
+    @CsvBindByPosition(position = 6)
+    @CsvBindByName(column = "Shipping Method Id")
+    private int shippingMethodId;
 
 }

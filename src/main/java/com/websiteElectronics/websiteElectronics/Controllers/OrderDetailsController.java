@@ -58,7 +58,7 @@ public class OrderDetailsController {
 
 
     @GetMapping("export/excel")
-    public void exportOrderDetails(HttpServletResponse response) throws IOException {
+    public void exportOrderDetails(HttpServletResponse response) throws Exception {
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=orderDetails.csv");
 

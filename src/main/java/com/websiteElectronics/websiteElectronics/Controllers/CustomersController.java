@@ -52,9 +52,8 @@ public class CustomersController {
     }
 
 
-    //  API export CSV
     @GetMapping("/export")
-    public void exportCustomers(HttpServletResponse response) throws IOException {
+    public void exportCustomers(HttpServletResponse response) throws Exception {
         response.setContentType("text/csv");
         response.setHeader("Content-Disposition", "attachment; filename=customers.csv");
 
