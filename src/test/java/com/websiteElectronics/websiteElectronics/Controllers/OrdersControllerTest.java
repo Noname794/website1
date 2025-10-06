@@ -33,8 +33,8 @@ class OrdersControllerTest {
 
     @Test
     void testCreateOrder_Success() throws Exception {
-        OrdersDto request = new OrdersDto(0, new Date(), "Delivery", 1000000, null, null, null);
-        OrdersDto response = new OrdersDto(1, new Date(), "Delivery", 1000000, null, null, null);
+        OrdersDto request = new OrdersDto(0, new Date(), "Delivery", 1000000, 1, 1, 1);
+        OrdersDto response = new OrdersDto(1, new Date(), "Delivery", 1000000, 1, 1, 1);
         Mockito.when(ordersService.createOrder(Mockito.any(OrdersDto.class))).thenReturn(response);
 
         mockMvc.perform(post("/api/orders")
@@ -46,8 +46,8 @@ class OrdersControllerTest {
 
     @Test
     void testUpdateOrder_Success() throws Exception {
-        OrdersDto request = new OrdersDto(0, new Date(), "SHIPPED", 2000000, null, null, null);
-        OrdersDto response = new OrdersDto(1, new Date(), "SHIPPED", 2000000, null, null, null);
+        OrdersDto request = new OrdersDto(0, new Date(), "SHIPPED", 2000000, 1, 1, 1);
+        OrdersDto response = new OrdersDto(1, new Date(), "SHIPPED", 2000000, 1, 1, 1);
         Mockito.when(ordersService.updateOrder(Mockito.eq(1), Mockito.any(OrdersDto.class))).thenReturn(response);
 
         mockMvc.perform(put("/api/orders/1")
@@ -66,7 +66,7 @@ class OrdersControllerTest {
 
     @Test
     void testGetOrderById_Success() throws Exception {
-        OrdersDto response = new OrdersDto(1, new Date(), "Delivery", 1000000, null, null, null);
+        OrdersDto response = new OrdersDto(1, new Date(), "Delivery", 1000000, 1, 1, 1);
         Mockito.when(ordersService.getOrderById(1)).thenReturn(response);
         mockMvc.perform(get("/api/orders/1"))
                 .andExpect(status().isOk())
@@ -76,8 +76,8 @@ class OrdersControllerTest {
     @Test
     void testGetAllOrders_Success() throws Exception {
         List<OrdersDto> responses = Arrays.asList(
-                new OrdersDto(1, new Date(), "Delivery", 1000000, null, null, null),
-                new OrdersDto(2, new Date(), "SHIPPED", 2000000, null, null, null)
+                new OrdersDto(1, new Date(), "Delivery", 1000000, 1, 1, 1),
+                new OrdersDto(2, new Date(), "SHIPPED", 2000000, 1, 1, 1)
         );
         Mockito.when(ordersService.getAllOrders()).thenReturn(responses);
         mockMvc.perform(get("/api/orders"))

@@ -27,13 +27,17 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
     @Value("${invoice.folder.path:D:/websiteElectronics/invoices}")
     private String invoiceFolderPath;
 
+    private final Object folderLock = new Object();
 
     @Override
     public String createInvoiceFile(Orders order) throws IOException {
 
         Path folderPath = Paths.get(invoiceFolderPath);
-        if (!Files.exists(folderPath)) {
-            Files.createDirectories(folderPath);
+
+        synchronized (folderLock) {
+            if (!Files.exists(folderPath)) {
+                Files.createDirectories(folderPath);
+            }
         }
 
         String filename = "invoice_order_" + order.getId() + "_" + System.currentTimeMillis() + ".txt";

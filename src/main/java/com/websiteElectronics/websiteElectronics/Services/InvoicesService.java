@@ -5,11 +5,14 @@ import com.websiteElectronics.websiteElectronics.Entities.Orders;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 
 public interface InvoicesService {
 
     InvoicesDto generateInvoice(Long orderId, Long customerId, String fileUrl, int expireAt);
+
+    CompletableFuture<InvoicesDto> generateAndSendInvoiceAsync(Orders order, int expireMinutes);
 
     InvoicesDto generateAndSendInvoice(Orders order, int expireMinutes) throws Exception;
 

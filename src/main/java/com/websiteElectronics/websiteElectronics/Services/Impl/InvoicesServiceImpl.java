@@ -11,11 +11,13 @@ import com.websiteElectronics.websiteElectronics.Services.InvoicesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class InvoicesServiceImpl implements InvoicesService {
@@ -46,6 +48,44 @@ public class InvoicesServiceImpl implements InvoicesService {
 
         Invoices savedInvoices = invoicesRepository.save(invoices);
         return InvoicesMapper.mapToDto(savedInvoices);
+    }
+
+    @Async("asyncExecutor")
+    @Override
+    public CompletableFuture<InvoicesDto> generateAndSendInvoiceAsync(Orders order, int expireMinutes) {
+        try{
+            logger.info("Generating and sending invoice for order {}", order.getId());
+
+            if(invoicesRepository.existsByOrderId((long) order.getId())) {
+                Optional<Invoices> existingInvoice = invoicesRepository.findByOrderId((long) order.getId());
+                if(existingInvoice.isPresent()) {
+                    return CompletableFuture.completedFuture(InvoicesMapper.mapToDto(existingInvoice.get()));
+                }
+            }
+
+            String filePath = invoiceFileService.createInvoiceFile(order);
+
+            Invoices invoice = new Invoices();
+            invoice.setOrderId((long) order.getId());
+            invoice.setCustomerId((long) order.getCustomer().getId());
+            invoice.setFileUrl(filePath);
+            invoice.setCreatedAt(LocalDateTime.now());
+            invoice.setExpireAt(LocalDateTime.now().plusMinutes(expireMinutes));
+
+            Invoices savedInvoice = invoicesRepository.save(invoice);
+
+            String customerEmail = order.getCustomer().getEmail();
+            String subject = "Hóa đơn đơn hàng:" + order.getId();
+            String emailContent = buildEmailContent(order);
+
+            emailService.sendInvoiceEmail(customerEmail, subject, emailContent, filePath);
+
+            return CompletableFuture.completedFuture(InvoicesMapper.mapToDto(savedInvoice));
+
+        }catch (Exception e) {
+            logger.error("Error generating and sending invoice for order {}", order.getId(), e);
+            return CompletableFuture.failedFuture(e);}
+
     }
 
     @Override

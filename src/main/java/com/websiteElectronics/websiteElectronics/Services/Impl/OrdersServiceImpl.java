@@ -58,13 +58,14 @@ public class OrdersServiceImpl implements OrdersService {
     public OrdersDto createOrder(OrdersDto orderDto) {
         Orders order = OrdersMapper.toEntity(orderDto);
         Orders saved = ordersRepository.save(order);
-        try {
-            invoicesService.generateAndSendInvoice(saved, 43200);
-            logger.info("Invoice created and sent for order ID: {}", saved.getId());
-        } catch (Exception e) {
-            logger.error("Failed to create/send invoice for order ID: {}", saved.getId(), e);
-        }
-        
+
+        invoicesService.generateAndSendInvoiceAsync(saved, 43200)
+                .thenAccept(invoice -> logger.info("Invoice created and sent for order ID: {}", saved.getId()))
+                .exceptionally(ex -> {
+                    logger.error("Failed to create/send invoice for order ID: {}", saved.getId(), ex);
+                    return null;
+                });
+
         return OrdersMapper.toDto(saved);
     }
 
